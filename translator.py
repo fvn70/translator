@@ -9,7 +9,7 @@ def do_request(p_from, p_to, word):
     url = f"{base}/{from_to}/{word}"
     r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'en-US,en;q=0.5'})
 
-    if r.status_code == 200:
+    try:
         soup = BeautifulSoup(r.content, 'html.parser')
         tr_content = soup.find('div', {'id':"translations-content"})
         if tr_content:
@@ -22,8 +22,8 @@ def do_request(p_from, p_to, word):
                 examples[p_to] = [lst[0].text.strip(), lst[1].text.strip()]
 
                 print_result(p_to)
-    else:
-        print(r.status_code)
+    except requests.exceptions.ConnectionError:
+        print("Something wrong with your internet connection")
 
 def print_result(k):
     print(f"\n{langs[k]} Translations:")
@@ -43,18 +43,26 @@ def write_results():
 
 
 base = "https://context.reverso.net/translation"
-lngs = {'fr': 'French', 'en': 'English'}
-langs = ['Arabic', 'German', 'English', 'Spanish','French', 'Hebrew', 'Japanese',
-         'Dutch','Polish', 'Portuguese', 'Romanian', 'Russian', 'Turkish']
-word = 'hello'
+langs = ['Arabic', 'German', 'English', 'Spanish', 'French', 'Hebrew', 'Japanese',
+         'Dutch', 'Polish', 'Portuguese', 'Romanian', 'Russian', 'Turkish']
 words = {}
 examples = {}
 
 args = sys.argv
+arg_1 = args[1].capitalize()
+arg_2 = args[2].capitalize()
+try:
+    lng_from = langs.index(arg_1)
+except:
+    print(f"Sorry, the program doesn't support {arg_1}")
+try:
+    lng_to = -1 if arg_2 == 'All' else langs.index(arg_2)
+except:
+    print(f"Sorry, the program doesn't support {arg_2}")
+    exit()
 
-lng_from = langs.index(args[1].capitalize())
-lng_to = -1 if args[2] == 'all' else langs.index(args[2].capitalize())
 word = args[3]
+
 
 fn = word + '.txt'
 if lng_to < 0:
@@ -63,4 +71,8 @@ if lng_to < 0:
             do_request(lng_from, k, word)
 else:
     do_request(lng_from, lng_to, word)
-write_results()
+
+if words:
+    write_results()
+else:
+    print(f"Sorry, unable to find {word}")
