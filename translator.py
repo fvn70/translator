@@ -52,25 +52,9 @@ examples = {}
 
 args = sys.argv
 
-print("Hello, you're welcome to the translator. Translator supports: ")
-print('''
-1. Arabic
-2. German
-3. English
-4. Spanish
-5. French
-6. Hebrew
-7. Japanese
-8. Dutch
-9. Polish
-10. Portuguese
-11. Romanian
-12. Russian
-13. Turkish''')
-
-lng_from = int(input('Type the number of your language:\n')) - 1
-lng_to = int(input('Type the number of a language you want to translate to or "0" to translate to all languages:\n')) - 1
-word = input('Type the word you want to translate:\n')
+lng_from = langs.index(args[1].capitalize())
+lng_to = -1 if args[2] == 'all' else langs.index(args[2].capitalize())
+word = args[3]
 
 fn = word + '.txt'
 if lng_to < 0:
