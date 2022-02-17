@@ -29,9 +29,14 @@ def do_request(k_from, k_to, word):
 
 
 def print_result(k):
-    print(f"\nTranslations")
-    print(words)
-    print(examples)
+    print(f"\n{lngs[k]} Translations:")
+    for word in words[:5]:
+        print(word)
+    print(f"\n{lngs[k]} Examples:")
+    for i in range(0, 10, 2):
+        print(examples[i])
+        print(examples[i + 1])
+        print()
 
 
 base = "https://context.reverso.net/translation"
