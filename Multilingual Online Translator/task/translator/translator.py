@@ -4,12 +4,11 @@ import requests
 from bs4 import BeautifulSoup
 
 def do_request(k_from, k_to, word):
-    from_to = lngs[k_from].lower() + '-' + lngs[k_to].lower()
+    from_to = langs[k_from].lower() + '-' + langs[k_to].lower()
     url = f"{base}/{from_to}/{word}"
     r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'en-US,en;q=0.5'})
 
     if r.status_code == 200:
-        print('200 OK')
         soup = BeautifulSoup(r.content, 'html.parser')
         tr_content = soup.find('div', {'id':"translations-content"})
         if tr_content:
@@ -29,10 +28,10 @@ def do_request(k_from, k_to, word):
 
 
 def print_result(k):
-    print(f"\n{lngs[k]} Translations:")
+    print(f"\n{langs[k]} Translations:")
     for word in words[:5]:
         print(word)
-    print(f"\n{lngs[k]} Examples:")
+    print(f"\n{langs[k]} Examples:")
     for i in range(0, 10, 2):
         print(examples[i])
         print(examples[i + 1])
@@ -40,13 +39,16 @@ def print_result(k):
 
 
 base = "https://context.reverso.net/translation"
-lngs = {'fr': 'French', 'en': 'English'}
+langs = ['Arabic', 'German', 'English', 'Spanish', 'French', 'Hebrew', 'Japanese',
+         'Dutch', 'Polish', 'Portuguese', 'Romanian', 'Russian', 'Turkish']
 words = []
 examples = []
 
-lng_to = input('Type "en" if you want to translate from French into English, or "fr" if you want to translate from English into French:\n')
-lng_from = 'fr' if lng_to == 'en' else 'en'
+print("Hello, you're welcome to the translator. Translator supports:")
+for i in range(len(langs)):
+    print(f"{i + 1}. {langs[i]}")
+lng_from = input('Type the number of your language:\n')
+lng_to = input('Type the number of language you want to translate to:\n')
 word = input('Type the word you want to translate:\n')
-print(f'You chose "{lng_to}" as the language to translate "{word}" to.')
 
-do_request(lng_from, lng_to, word)
+do_request(int(lng_from) - 1, int(lng_to) - 1, word)
