@@ -1,4 +1,5 @@
 import re
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -42,12 +43,12 @@ langs = ['Arabic', 'German', 'English', 'Spanish', 'French', 'Hebrew', 'Japanese
 words = {}
 examples = {}
 
-print("Hello, you're welcome to the translator. Translator supports:")
-for i in range(len(langs)):
-    print(f"{i + 1}. {langs[i]}")
-lng_from = int(input('Type the number of your language:\n')) - 1
-lng_to = int(input('Type the number of language you want to translate to:\n')) - 1
-word = input('Type the word you want to translate:\n')
+args = sys.argv
+
+lng_from = langs.index(args[1].capitalize())
+lng_to = -1 if args[2] == 'all' else langs.index(args[2].capitalize())
+word = args[3]
+
 fn = f'{word}.txt'
 
 if lng_to < 0:
